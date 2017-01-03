@@ -27,13 +27,37 @@
   
   self.textFieldURL.text = @"URL";
   self.outputLabel.text = @"  Label Text";
+  
+  self.textFieldURL.delegate = self;
 }
 
+- (void) dealloc {
+  self.textFieldURL.delegate = nil;
+}
 
 - (void)didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
   // Dispose of any resources that can be recreated.
 }
 
+#pragma mark UITextFieldDelegate
+
+// Implement UITextFieldDelegate protocol
+
+- (BOOL)textFieldShouldReturn:(UITextField*)textField
+{
+  NSLog(@"URL TEXT INPUT: \"%@\"", textField.text);
+  
+  BOOL didResign = [textField resignFirstResponder];
+  
+  //[self startDownload:textField.text];
+  
+  return didResign;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+  [self.textFieldURL resignFirstResponder];
+}
 
 @end
