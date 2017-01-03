@@ -21,10 +21,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fB6-Jv-ACb">
-                                <rect key="frame" x="0.0" y="-107" width="375" height="586"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                <color key="backgroundColor" white="0.98717672413793101" alpha="1" colorSpace="calibratedWhite"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fB6-Jv-ACb">
+                                <rect key="frame" x="16" y="98" width="288" height="362"/>
+                                <color key="backgroundColor" white="0.95959051724137934" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -37,7 +36,10 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="Bua-LH-7tn" firstAttribute="top" secondItem="fB6-Jv-ACb" secondAttribute="bottom" id="Fol-pI-dlN"/>
+                            <constraint firstItem="fB6-Jv-ACb" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="Kel-g9-bKy"/>
                             <constraint firstItem="c9b-kM-bip" firstAttribute="top" secondItem="n79-Qy-YVk" secondAttribute="bottom" constant="10" id="Kj1-3d-lnn"/>
+                            <constraint firstItem="fB6-Jv-ACb" firstAttribute="top" secondItem="c9b-kM-bip" secondAttribute="top" id="Pzq-kQ-ulT"/>
                             <constraint firstItem="c9b-kM-bip" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="T6a-ve-m80"/>
                         </constraints>
                     </view>
@@ -49,7 +51,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="188.4375" y="101.875"/>
+            <point key="canvasLocation" x="187.5" y="101.25"/>
         </scene>
     </scenes>
 </document>
