@@ -27,11 +27,13 @@
   NSAssert(self.textFieldURL, @"textField");
   NSAssert(self.outputLabel, @"outputLabel");
   
-//  self.textFieldURL.text = @"URL";
+  // HTTPS over TLS is the default in iOS 10.X
   
-  // https://developers.google.com/identity/sign-in/ios/
+  //self.textFieldURL.text = @"http://developers.google.com/identity/sign-in/ios";
+
+  // Fails because of TLS requirements
   
-  self.textFieldURL.text = @"developers.google.com/identity/sign-in/ios";
+  self.textFieldURL.text = @"http://www.javatpoint.com/http-session-in-session-tracking";
   
   self.outputLabel.text = @"  Label Text";
   
@@ -75,20 +77,26 @@
   AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
   
   NSString *formattedURLStr = [NSString stringWithFormat:@"%@", urlStr];
-  
-  NSLog(@"HTTPS URL \"%@\"", formattedURLStr);
-  
+
   NSURL *URL = [NSURL URLWithString:formattedURLStr];
   NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+  
+  NSLog(@"URL GET \"%@\"", request);
   
   NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
     return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
-  } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+  } completionHandler:^(NSURLResponse *response, NSURL *filePathURL, NSError *error) {
     if (error != nil) {
-    NSLog(@"could not download: %@", error);
+      NSLog(@"could not download: %@", error);
+      self.outputLabel.text = [NSString stringWithFormat:@"  %@", [error description]];
     } else {
-    NSLog(@"File downloaded to: %@", filePath);
+      NSLog(@"File downloaded to: %@", filePathURL);
+      NSString *filePath = [filePathURL path];
+      NSStringEncoding enc;
+      NSString *fileDataStr = [NSString stringWithContentsOfFile:filePath usedEncoding:&enc error:nil];
+      assert(NSUTF8StringEncoding == enc);
+      self.outputLabel.text = [NSString stringWithFormat:@"  %@", fileDataStr];
     }
   }];
   
