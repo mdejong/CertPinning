@@ -30,12 +30,16 @@
   // HTTPS over TLS is the default in iOS 10.X
   
   self.textFieldURL.text = @"https://developers.google.com/identity/sign-in/ios";
-
-  // Fails because of TLS requirements
   
-  //self.textFieldURL.text = @"http://www.javatpoint.com/http-session-in-session-tracking";
+  // HTTP connection fails by default until iOS 10.X due to TLS reqs
   
-  self.outputLabel.text = @"  Label Text";
+//  self.textFieldURL.text = @"http://developers.google.com/identity/sign-in/ios";
+  
+  self.outputLabel.text = @"  ";
+  
+//  self.outputLabel.lineBreakMode = NSLineBreakByWordWrapping;
+  self.outputLabel.lineBreakMode = NSLineBreakByClipping;
+  self.outputLabel.numberOfLines = 40;
   
   self.textFieldURL.delegate = self;
 }
