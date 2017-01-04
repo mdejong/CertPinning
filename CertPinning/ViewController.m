@@ -8,13 +8,13 @@
 
 #import "ViewController.h"
 
-#import "AFNetworking.h"
-
 @interface ViewController ()
 
 @property (nonatomic, retain) IBOutlet UITextField *textFieldURL;
 
 @property (nonatomic, retain) IBOutlet UILabel *outputLabel;
+
+@property (atomic, copy) NSString *downloadStr;
 
 @end
 
@@ -29,11 +29,11 @@
   
   // HTTPS over TLS is the default in iOS 10.X
   
-  //self.textFieldURL.text = @"http://developers.google.com/identity/sign-in/ios";
+  self.textFieldURL.text = @"https://developers.google.com/identity/sign-in/ios";
 
   // Fails because of TLS requirements
   
-  self.textFieldURL.text = @"http://www.javatpoint.com/http-session-in-session-tracking";
+  //self.textFieldURL.text = @"http://www.javatpoint.com/http-session-in-session-tracking";
   
   self.outputLabel.text = @"  Label Text";
   
@@ -69,36 +69,35 @@
   [self.textFieldURL resignFirstResponder];
 }
 
-// Invoked as a result of UI action, starts download fron the given URL
-
 - (void) startDownload:(NSString*)urlStr
 {
-  NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-  AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+  NSURLSessionConfiguration *defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+  NSURLSession *sessionWithoutADelegate = [NSURLSession sessionWithConfiguration:defaultConfiguration];
   
-  NSString *formattedURLStr = [NSString stringWithFormat:@"%@", urlStr];
+  NSURL *url = [NSURL URLWithString:urlStr];
+  
+  NSURLSessionDataTask *downloadTask = [sessionWithoutADelegate dataTaskWithURL:url
+                                                                  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+  {
+    NSString *contentsStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
-  NSURL *URL = [NSURL URLWithString:formattedURLStr];
-  NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-  
-  NSLog(@"URL GET \"%@\"", request);
-  
-  NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-    NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-    return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
-  } completionHandler:^(NSURLResponse *response, NSURL *filePathURL, NSError *error) {
+    NSString *formattedStr;
+    
     if (error != nil) {
       NSLog(@"could not download: %@", error);
-      self.outputLabel.text = [NSString stringWithFormat:@"  %@", [error description]];
+      formattedStr = [NSString stringWithFormat:@"  %@", [error description]];
     } else {
-      NSLog(@"File downloaded to: %@", filePathURL);
-      NSString *filePath = [filePathURL path];
-      NSStringEncoding enc;
-      NSString *fileDataStr = [NSString stringWithContentsOfFile:filePath usedEncoding:&enc error:nil];
-      assert(NSUTF8StringEncoding == enc);
-      self.outputLabel.text = [NSString stringWithFormat:@"  %@", fileDataStr];
+      NSLog(@"download: %@", contentsStr);
+      formattedStr = [NSString stringWithFormat:@"  %@", contentsStr];
     }
-  }];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      assert([NSThread isMainThread] == TRUE);
+      self.downloadStr = formattedStr;
+      self.outputLabel.text = formattedStr;
+    });
+  }
+          ];
   
   [downloadTask resume];
 }
