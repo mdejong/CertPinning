@@ -14,10 +14,8 @@
 		3C527A3E1E1C4145002DD487 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C527A3D1E1C4145002DD487 /* Assets.xcassets */; };
 		3C527A411E1C4145002DD487 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C527A3F1E1C4145002DD487 /* LaunchScreen.storyboard */; };
 		3C527A4C1E1C4145002DD487 /* CertPinningTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C527A4B1E1C4145002DD487 /* CertPinningTests.m */; };
-		3C99DC601E25A33500726AFC /* Cert0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 3C99DC5D1E25A33500726AFC /* Cert0.cer */; };
-		3C99DC611E25A33500726AFC /* Cert1.cer in Resources */ = {isa = PBXBuildFile; fileRef = 3C99DC5E1E25A33500726AFC /* Cert1.cer */; };
-		3C99DC621E25A33500726AFC /* Cert2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 3C99DC5F1E25A33500726AFC /* Cert2.cer */; };
 		3C99DC651E25A38F00726AFC /* AsyncURLDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99DC641E25A38F00726AFC /* AsyncURLDownloader.m */; };
+		3C99DC671E25B81F00726AFC /* CertA0.cer in Resources */ = {isa = PBXBuildFile; fileRef = 3C99DC661E25B81F00726AFC /* CertA0.cer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,11 +42,9 @@
 		3C527A471E1C4145002DD487 /* CertPinningTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CertPinningTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C527A4B1E1C4145002DD487 /* CertPinningTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CertPinningTests.m; sourceTree = "<group>"; };
 		3C527A4D1E1C4145002DD487 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3C99DC5D1E25A33500726AFC /* Cert0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Cert0.cer; sourceTree = "<group>"; };
-		3C99DC5E1E25A33500726AFC /* Cert1.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Cert1.cer; sourceTree = "<group>"; };
-		3C99DC5F1E25A33500726AFC /* Cert2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = Cert2.cer; sourceTree = "<group>"; };
 		3C99DC631E25A38F00726AFC /* AsyncURLDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncURLDownloader.h; sourceTree = "<group>"; };
 		3C99DC641E25A38F00726AFC /* AsyncURLDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncURLDownloader.m; sourceTree = "<group>"; };
+		3C99DC661E25B81F00726AFC /* CertA0.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = CertA0.cer; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,9 +122,7 @@
 		3C99DC5C1E25A33500726AFC /* GoogleCerts */ = {
 			isa = PBXGroup;
 			children = (
-				3C99DC5D1E25A33500726AFC /* Cert0.cer */,
-				3C99DC5E1E25A33500726AFC /* Cert1.cer */,
-				3C99DC5F1E25A33500726AFC /* Cert2.cer */,
+				3C99DC661E25B81F00726AFC /* CertA0.cer */,
 			);
 			path = GoogleCerts;
 			sourceTree = "<group>";
@@ -218,11 +212,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C527A411E1C4145002DD487 /* LaunchScreen.storyboard in Resources */,
-				3C99DC621E25A33500726AFC /* Cert2.cer in Resources */,
+				3C99DC671E25B81F00726AFC /* CertA0.cer in Resources */,
 				3C527A3E1E1C4145002DD487 /* Assets.xcassets in Resources */,
-				3C99DC611E25A33500726AFC /* Cert1.cer in Resources */,
 				3C527A3C1E1C4145002DD487 /* Main.storyboard in Resources */,
-				3C99DC601E25A33500726AFC /* Cert0.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
