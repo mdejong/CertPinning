@@ -626,11 +626,9 @@ NSString * const AsyncURLDownloaderConnectionDelegateProgress = @"AsyncURLDownlo
     NSString *protocol = protectionSpace.protocol;
     NSString *host = protectionSpace.host;
     
-    BOOL certIsValid = TRUE;
+    BOOL certIsValid = FALSE;
     
     if ([protocol isEqualToString:@"https"] && [host isEqualToString:@"developers.google.com"]) {
-      //NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-      
       NSString *realm = protectionSpace.realm;
       BOOL isProxy = protectionSpace.isProxy;
       NSString *proxyType = protectionSpace.proxyType;
@@ -648,30 +646,47 @@ NSString * const AsyncURLDownloaderConnectionDelegateProgress = @"AsyncURLDownlo
         SecCertificateRef cert = SecTrustGetCertificateAtIndex(serverTrust, i);
         NSData *certData = (__bridge_transfer NSData *) SecCertificateCopyData(cert);
         
-        NSString *resFilename = @"Cert0.cer";
-        NSString *resPath = [[NSBundle mainBundle] pathForResource:resFilename ofType:nil];
-        NSAssert(resPath, @"Cert not found at resource path \"%@\"", resPath);
-        NSData *knownGoodCertData = [NSData dataWithContentsOfFile:resPath];
-        NSAssert(knownGoodCertData, @"Cert not loaded from resource path \"%@\"", resPath);
+        NSLog(@"download cert data length %d", (int)certData.length);
         
-        BOOL isSame = [knownGoodCertData isEqualToData:certData];
+        if ((0)) {
+          // Write downloaded cert to /tmp
+          NSString *tmpFilename = [NSString stringWithFormat:@"DL_Cert%d.cer", i];
+          NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:tmpFilename];
+          [certData writeToFile:tmpPath atomically:TRUE];
+          NSLog(@"wrote \"%@\"", tmpPath);
+        }
         
-        NSLog(@"Cert is same : %d", (int)isSame);
+        // Check first cert
         
-        if (!isSame) {
-          certIsValid = FALSE;
+        if (1) {
+          NSString *resFilename = @"CertA0.cer";
+          NSString *resPath = [[NSBundle mainBundle] pathForResource:resFilename ofType:nil];
+          NSAssert(resPath, @"Cert not found at resource path \"%@\"", resPath);
+          NSData *knownGoodCertData = [NSData dataWithContentsOfFile:resPath];
+          NSAssert(knownGoodCertData, @"Cert not loaded from resource path \"%@\"", resPath);
+          
+          NSLog(@"attached cert data length %d", (int)knownGoodCertData.length);
+          
+          BOOL isSame = [knownGoodCertData isEqualToData:certData];
+          
+          NSLog(@"Cert is same : %d", (int)isSame);
+          
+          if (isSame) {
+            certIsValid = TRUE;
+          }
         }
       }
 
       if (certIsValid) {
         NSURLCredential *credential = [[NSURLCredential alloc] initWithTrust:serverTrust];
-        
 #if __has_feature(objc_arc)
 #else
         credential = [credential autorelease];
 #endif // objc_arc
         
         if (credential) {
+          // Allow cert that is an exact match to known cert
+          
           [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
         }
       } else {
