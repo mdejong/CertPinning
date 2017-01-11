@@ -130,7 +130,8 @@
     
     formattedStr = contentsStr;
   } else {
-    formattedStr = [NSString stringWithFormat:@"HTTP status code %d", httpStatusCode];
+    id errorObj = [[notification userInfo] objectForKey:@"ERROR"];
+    formattedStr = [NSString stringWithFormat:@"HTTP status code %d\n%@", httpStatusCode, errorObj];
     NSLog(@"%@", formattedStr);
   }
 

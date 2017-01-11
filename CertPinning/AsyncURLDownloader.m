@@ -648,7 +648,7 @@ NSString * const AsyncURLDownloaderConnectionDelegateProgress = @"AsyncURLDownlo
         
         NSLog(@"download cert data length %d", (int)certData.length);
         
-        if ((0)) {
+        if ((1)) {
           // Write downloaded cert to /tmp
           NSString *tmpFilename = [NSString stringWithFormat:@"DL_Cert%d.cer", i];
           NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:tmpFilename];
@@ -656,7 +656,7 @@ NSString * const AsyncURLDownloaderConnectionDelegateProgress = @"AsyncURLDownlo
           NSLog(@"wrote \"%@\"", tmpPath);
         }
         
-        // Check first cert
+        // Validate that cert is exactly identical to file attached to the binary
         
         if (1) {
           NSString *resFilename = @"CertA0.cer";
