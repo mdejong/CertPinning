@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 
+#import "AsyncURLDownloader.h"
+
 @interface ViewController ()
 
 @property (nonatomic, retain) IBOutlet UITextField *textFieldURL;
@@ -15,6 +17,8 @@
 @property (nonatomic, retain) IBOutlet UILabel *outputLabel;
 
 @property (atomic, copy) NSString *downloadStr;
+
+@property (nonatomic, retain) AsyncURLDownloader *downloader;
 
 @end
 
@@ -46,6 +50,13 @@
 
 - (void) dealloc {
   self.textFieldURL.delegate = nil;
+  
+  if (self.downloader != nil) {
+    [self.downloader cancelDownload];
+    self.downloader = nil;
+  }
+  
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -75,35 +86,63 @@
 
 - (void) startDownload:(NSString*)urlStr
 {
-  NSURLSessionConfiguration *defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-  NSURLSession *sessionWithoutADelegate = [NSURLSession sessionWithConfiguration:defaultConfiguration];
-  
   NSURL *url = [NSURL URLWithString:urlStr];
+ 
+  AsyncURLDownloader *downloader = [AsyncURLDownloader asyncURLDownloaderWithURL:url];
   
-  NSURLSessionDataTask *downloadTask = [sessionWithoutADelegate dataTaskWithURL:url
-                                                                  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-  {
-    NSString *contentsStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  self.downloader = downloader;
+  
+  // Register for notification when URL download is finished
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(asyncURLDownloaderDidFinishNotification:)
+                                               name:AsyncURLDownloadDidFinish
+                                             object:self.downloader];
+  
+  [downloader startDownload];
+}
 
-    NSString *formattedStr;
-    
-    if (error != nil) {
-      NSLog(@"could not download: %@", error);
-      formattedStr = [NSString stringWithFormat:@"  %@", [error description]];
-    } else {
-      NSLog(@"download: %@", contentsStr);
-      formattedStr = [NSString stringWithFormat:@"  %@", contentsStr];
-    }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-      assert([NSThread isMainThread] == TRUE);
-      self.downloadStr = formattedStr;
-      self.outputLabel.text = formattedStr;
-    });
-  }
-          ];
+// Invoked when URL has been fully downloaded
+
+- (void) asyncURLDownloaderDidFinishNotification:(NSNotification*)notification
+{
+  NSAssert(self.downloader != nil, @"downloader is nil");
   
-  [downloadTask resume];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:AsyncURLDownloadDidFinish object:self.downloader];
+  
+  int httpStatusCode = self.downloader.httpStatusCode;
+  NSAssert(httpStatusCode > 0, @"httpStatusCode is invalid");
+  
+  NSData *downloadedData = nil;
+  
+  NSString *formattedStr = @"";
+  
+  if (httpStatusCode == 200) {
+    // Downloaded data from the network, test it to see if this is a PNG file, then check that it is APNG
+    NSLog(@"HTTP 200");
+    
+    downloadedData = [[notification userInfo] objectForKey:@"DATA"];
+    
+    NSString *contentsStr = [[NSString alloc] initWithData:downloadedData encoding:NSUTF8StringEncoding];
+    
+    NSLog(@"contents:");
+    NSLog(@"%@", contentsStr);
+    
+    formattedStr = contentsStr;
+  } else {
+    formattedStr = [NSString stringWithFormat:@"HTTP status code %d", httpStatusCode];
+    NSLog(@"%@", formattedStr);
+  }
+
+  dispatch_async(dispatch_get_main_queue(), ^{
+    assert([NSThread isMainThread] == TRUE);
+    self.downloadStr = formattedStr;
+    self.outputLabel.text = formattedStr;
+  });
+  
+  self.downloader = nil;
+  
+  return;
 }
 
 @end
